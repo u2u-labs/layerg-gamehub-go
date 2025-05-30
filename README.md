@@ -21,7 +21,7 @@ A Go SDK for interacting with **LayerG GameHub** — manage game assets, collect
 ## 📦 Installation
 
 ```bash
-go get github.com/yourname/layerggamehub
+go get github.com/u2u-labs/layerg-gamehub-go
 ```
 
 ---
@@ -35,7 +35,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/yourname/layerggamehub"
+    "github.com/u2u-labs/layerg-gamehub-go"
 )
 
 func main() {

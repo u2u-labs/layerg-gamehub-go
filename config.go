@@ -17,7 +17,7 @@ func LoadEnv() {
 func GetBaseURL() string {
 	baseURL := os.Getenv("BASE_URL")
 	if baseURL == "" {
-		baseURL = "https://api.layergamehub.com"
+		baseURL = "https://agg-dev.layerg.xyz/api"
 	}
 	return baseURL
 }

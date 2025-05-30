@@ -7,38 +7,13 @@ import (
 	"net/http"
 )
 
-func (c *Client) CreateAsset(asset Asset) error {
-	if err := c.ensureAccessToken(); err != nil {
-		return err
-	}
-
-	body, _ := json.Marshal(asset)
-	req, err := http.NewRequest("POST", c.BaseURL+"/assets", bytes.NewBuffer(body))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("create asset failed: %s", resp.Status)
-	}
-
-	return nil
-}
-
-func (c *Client) GetAsset(id string) (*Asset, error) {
+func (c *Client) GetAsset(collectionId string, assetId string) (*Asset, error) {
 	if err := c.ensureAccessToken(); err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/assets/%s", c.BaseURL, id), nil)
+	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -60,4 +35,83 @@ func (c *Client) GetAsset(id string) (*Asset, error) {
 	}
 
 	return &asset, nil
+}
+
+func (c *Client) CreateAsset(input CreateAssetInput) error {
+	if err := c.ensureAccessToken(); err != nil {
+		return err
+	}
+
+	body, _ := json.Marshal(input)
+	req, err := http.NewRequest("POST", c.BaseURL+"/assets/create", bytes.NewBuffer(body))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("create asset failed: %s", resp.Status)
+	}
+
+	return nil
+}
+
+func (c *Client) UpdateAsset(input UpdateAssetInput, collectionId string, assetId string) error {
+	if err := c.ensureAccessToken(); err != nil {
+		return err
+	}
+
+	body, _ := json.Marshal(input)
+	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(body))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("update asset failed: %s", resp.Status)
+	}
+
+	return nil
+}
+
+func (c *Client) DeleteAsset(collectionId string, assetId string) error {
+	if err := c.ensureAccessToken(); err != nil {
+		return err
+	}
+
+	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("delete asset failed: %s", resp.Status)
+	}
+
+	return nil
 }

@@ -1,24 +1,18 @@
 # LayerG GameHub Go SDK
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/yourname/layerggamehub.svg)](https://pkg.go.dev/github.com/yourname/layerggamehub)
-[![Go Report Card](https://goreportcard.com/badge/github.com/yourname/layerggamehub)](https://goreportcard.com/report/github.com/yourname/layerggamehub)
-[![License](https://img.shields.io/github/license/yourname/layerggamehub)](LICENSE)
-
-A Go SDK for interacting with **LayerG GameHub** — manage game assets, collections, and publish content easily via Go.
+A Go SDK for interacting with **LayerG GameHub**.
 
 ---
 
-## ✨ Features
+## Features
 
-- 🔑 Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
-- 🎮 Manage **Assets**: create, get, update, delete
-- 📦 Manage **Collections**: create, get, update, delete
-- 🚀 Publish / remove content to GameHub
-- ⚙ Configurable backend `baseURL` via `.env`
+- Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
+- Multi-environment support (`Dev`, `Prod`)
+- Asset management: create, update, delete, fetch
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 go get github.com/u2u-labs/layerg-gamehub-go
@@ -39,20 +33,50 @@ import (
 )
 
 func main() {
-    client, err := layerggamehub.NewClient("your-api-key", "your-api-key-id")
+    // Initialize client in production (default)
+    client, err := layerggamehub.NewClient("your-api-key", "your-api-key-id", layerggamehub.Prod)
     if err != nil {
         log.Fatalf("Failed to initialize client: %v", err)
     }
 
-    // Create an asset
-    asset := layerggamehub.Asset{
-        ID:   "asset-123",
-        Description: "Test Asset",
-        ...rest
+    // Example: Create an asset
+    assetInput := layerggamehub.CreateAssetInput{
+        Name: "My Asset",
+        // add other fields as required
     }
-    if err := client.CreateAsset(asset); err != nil {
+
+    if err := client.CreateAsset(assetInput); err != nil {
         log.Fatalf("Failed to create asset: %v", err)
     }
     fmt.Println("Asset created successfully!")
+
+    // Example: Fetch an asset
+    asset, err := client.GetAsset("collection-id", "asset-id")
+    if err != nil {
+        log.Fatalf("Failed to get asset: %v", err)
+    }
+    fmt.Printf("Fetched asset: %+v\n", asset)
 }
 ```
+
+---
+
+## 🌍 Environment Support
+
+The SDK supports:
+
+- `layerggamehub.Dev` → Development environment
+- `layerggamehub.Prod` → Production environment
+
+It automatically sets the correct baseURL based on the environment passed to `NewClient()`.
+
+---
+
+## 📚 API Coverage
+
+- `CreateAsset`
+- `GetAsset`
+- `UpdateAsset`
+- `DeleteAsset`
+
+Authentication (login/refresh) is handled internally.

@@ -17,13 +17,11 @@ type Client struct {
 	mu sync.Mutex
 }
 
-func NewClient(apiKey, apiKeyId string) (*Client, error) {
-	LoadEnv()
-
+func NewClient(apiKey, apiKeyId string, env Environment) (*Client, error) {
 	c := &Client{
 		ApiKey:     apiKey,
 		ApiKeyId:   apiKeyId,
-		BaseURL:    GetBaseURL(),
+		BaseURL:    GetBaseURL(env),
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 	}
 

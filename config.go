@@ -1,23 +1,17 @@
 package layerggamehub
 
-import (
-	"log"
-	"os"
+type Environment string
 
-	"github.com/joho/godotenv"
+const (
+	Dev  Environment = "dev"
+	Prod Environment = "prod"
 )
 
-func LoadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("No .env file found, using default values")
+func GetBaseURL(env Environment) string {
+	var baseURLs = map[Environment]string{
+		Dev:  "https://agg-dev.layerg.xyz/api",
+		Prod: "https://agg-dev.layerg.xyz/api",
 	}
-}
 
-func GetBaseURL() string {
-	baseURL := os.Getenv("BASE_URL")
-	if baseURL == "" {
-		baseURL = "https://agg-dev.layerg.xyz/api"
-	}
-	return baseURL
+	return baseURLs[env]
 }

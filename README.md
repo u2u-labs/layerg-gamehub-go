@@ -81,7 +81,7 @@ It automatically sets the correct baseURL based on the environment passed to `Ne
 - `UpdateAsset`
 - `DeleteAsset`
 
-## Collection
+### Collection
 
 - `PublicCollection`
 

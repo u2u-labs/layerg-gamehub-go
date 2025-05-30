@@ -74,9 +74,15 @@ It automatically sets the correct baseURL based on the environment passed to `Ne
 
 ## API Coverage
 
+### Asset
+
 - `CreateAsset`
 - `GetAsset`
 - `UpdateAsset`
 - `DeleteAsset`
+
+## Collection
+
+- `PublicCollection`
 
 Authentication (login/refresh) is handled internally.

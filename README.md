@@ -33,8 +33,8 @@ import (
 )
 
 func main() {
-    // Initialize client in production (default)
-    client, err := layerggamehub.NewClient("your-api-key", "your-api-key-id", layerggamehub.Prod)
+    // Initialize client in dev
+    client, err := layerggamehub.NewClient("your-api-key", "your-api-key-id", layerggamehub.Dev)
     if err != nil {
         log.Fatalf("Failed to initialize client: %v", err)
     }

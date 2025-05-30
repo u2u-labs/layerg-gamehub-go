@@ -9,6 +9,7 @@ A Go SDK for interacting with **LayerG GameHub**.
 - Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
 - Multi-environment support (`Dev`, `Prod`)
 - Asset management: create, update, delete, fetch
+- Collection management: public collection
 
 ---
 

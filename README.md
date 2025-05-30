@@ -68,8 +68,6 @@ The SDK supports:
 - `layerggamehub.Dev` → Development environment
 - `layerggamehub.Prod` → Production environment
 
-It automatically sets the correct baseURL based on the environment passed to `NewClient()`.
-
 ---
 
 ## API Coverage

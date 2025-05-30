@@ -15,7 +15,7 @@ type authResponse struct {
 func (c *Client) authenticate() error {
 	payload := map[string]string{
 		"apiKey":   c.ApiKey,
-		"apiKeyId": c.ApiKeyId,
+		"apiKeyID": c.ApiKeyId,
 	}
 	body, _ := json.Marshal(payload)
 

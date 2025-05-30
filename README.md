@@ -20,7 +20,7 @@ go get github.com/u2u-labs/layerg-gamehub-go
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```go
 package main
@@ -61,7 +61,7 @@ func main() {
 
 ---
 
-## 🌍 Environment Support
+## Environment Support
 
 The SDK supports:
 
@@ -72,7 +72,7 @@ It automatically sets the correct baseURL based on the environment passed to `Ne
 
 ---
 
-## 📚 API Coverage
+## API Coverage
 
 - `CreateAsset`
 - `GetAsset`

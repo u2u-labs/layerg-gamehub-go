@@ -52,7 +52,7 @@ func main() {
     fmt.Println("Asset created successfully!")
 
     // Example: Fetch an asset
-    asset, err := client.GetAsset("collection-id", "asset-id")
+    asset, err := client.GetAsset("asset-id", "collection-id")
     if err != nil {
         log.Fatalf("Failed to get asset: %v", err)
     }

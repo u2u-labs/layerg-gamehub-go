@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetAsset(collectionId string, assetId string) (*Asset, error) {
+func (c *Client) GetAsset(assetId string, collectionId string) (*Asset, error) {
 	if err := c.ensureAccessToken(); err != nil {
 		return nil, err
 	}

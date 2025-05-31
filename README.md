@@ -82,6 +82,8 @@ The SDK supports:
 
 ### Collection
 
+- `CreateCollection`
+- `UpdateCollection`
 - `PublicCollection`
 
 Authentication (login/refresh) is handled internally.

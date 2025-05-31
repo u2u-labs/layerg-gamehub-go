@@ -69,3 +69,21 @@ type Attribute struct {
 	TraitType string `json:"trait_type"`
 	Value     string `json:"value"`
 }
+
+//Collection
+
+type UpsertCollectionInput struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	AvatarURL   string `json:"avatarUrl"`
+	ProjectID   string `json:"projectId"`
+	SMC         SMC    `json:"smc"`
+}
+
+type SMC struct {
+	ContractAddress string `json:"contractAddress"`
+	ContractType    string `json:"contractType"`
+	NetworkID       int    `json:"networkID"`
+	TokenSymbol     string `json:"tokenSymbol"`
+	TotalSupply     int    `json:"totalSupply"`
+}

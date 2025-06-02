@@ -1,24 +1,20 @@
-# Layer GameHub Go SDK
+# LayerG GameHub Go SDK
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/u2u-labs/layerg-gamehub-go.svg)](https://pkg.go.dev/github.com/u2u-labs/layerg-gamehub-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/u2u-labs/layerg-gamehub-go)](https://goreportcard.com/report/github.com/u2u-labs/layerg-gamehub-go)
-[![License](https://img.shields.io/github/license/yourname/layerggamehub)](LICENSE)
-
-A Go SDK for interacting with **Layer GameHub** — manage game assets (create, update, delete, fetch) and handle authentication seamlessly across development and production environments, now with configurable timeouts and retry logic.
+A Go SDK for interacting with **LayerG GameHub**
 
 ---
 
 ## ✨ Features
 
-- 🔑 Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
-- 🌍 Multi-environment support (`Dev`, `Prod`)
-- 🎮 Asset management: create, update, delete, fetch
-- ⏱ Configurable timeout and retry for all requests
-- ⚙ Easy integration, no manual `.env` setup required
+- Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
+- Multi-environment support (`Dev`, `Prod`)
+- Asset management: create, update, delete, fetch
+- Collection management: create, update, public collection
+- Configurable timeout and retry for all requests
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 go get github.com/u2u-labs/layerg-gamehub-go
@@ -75,7 +71,7 @@ func main() {
 
 ---
 
-## 🌍 Environment Support
+## Environment Support
 
 The SDK supports:
 
@@ -106,22 +102,3 @@ client, err := layerggamehub.NewClient(
     },
 )
 ```
-
----
-
-## 📚 API Coverage
-
-### Assets
-
-- `CreateAsset`
-- `GetAsset`
-- `UpdateAsset`
-- `DeleteAsset`
-
-### Collections
-
-- `CreateCollection`
-- `UpdateCollection`
-- `PublicCollection`
-
-Authentication (login/refresh) is handled internally, with automatic retries.

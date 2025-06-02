@@ -1,6 +1,7 @@
 package layerggamehub
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"sync"
@@ -24,10 +25,18 @@ type ClientOptions struct {
 	Retry   int           // e.g., 3 retries
 }
 
-func NewClient(apiKey, apiKeyId string, env Environment, opts *ClientOptions) (*Client, error) {
+func NewClient(apiKey string, apiKeyId string, env Environment, opts *ClientOptions) (*Client, error) {
 	timeout := 10 * time.Second
 	if opts != nil && opts.Timeout > 0 {
 		timeout = opts.Timeout
+	}
+
+	if apiKey == "" {
+		return nil, errors.New("Api key cannot be empty")
+	}
+
+	if apiKeyId == "" {
+		return nil, errors.New("Api key id cannot be empty")
 	}
 
 	c := &Client{

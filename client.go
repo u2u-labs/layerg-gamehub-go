@@ -48,7 +48,7 @@ func NewClient(apiKey, apiKeyId string, env Environment, opts *ClientOptions) (*
 	return c, nil
 }
 
-func (c *Client) doRequest(req *http.Request) (*http.Response, error) {
+func (c *Client) DoWithRetry(req *http.Request) (*http.Response, error) {
 	var resp *http.Response
 	var err error
 
@@ -58,9 +58,21 @@ func (c *Client) doRequest(req *http.Request) (*http.Response, error) {
 	}
 
 	for i := 0; i < retries; i++ {
+		if err := c.ensureAccessToken(); err != nil {
+			return nil, err
+		}
+	}
+
+	for i := 0; i < retries; i++ {
 		resp, err = c.HTTPClient.Do(req)
+
 		if err == nil {
 			return resp, nil
+		}
+
+		// If error is not connection error, return without retry
+		if !isConnectionError(err) {
+			return nil, err
 		}
 	}
 

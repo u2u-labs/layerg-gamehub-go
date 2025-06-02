@@ -8,10 +8,6 @@ import (
 )
 
 func (c *Client) GetCollection(collectionId string) (*Collection, error) {
-	if err := c.ensureAccessToken(); err != nil {
-		return nil, err
-	}
-
 	url := fmt.Sprintf("%s/collection/%s", c.BaseURL, collectionId)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -19,7 +15,7 @@ func (c *Client) GetCollection(collectionId string) (*Collection, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -35,10 +31,6 @@ func (c *Client) GetCollection(collectionId string) (*Collection, error) {
 }
 
 func (c *Client) CreateCollection(input UpsertCollectionInput) error {
-	if err := c.ensureAccessToken(); err != nil {
-		return err
-	}
-
 	body, _ := json.Marshal(input)
 	req, err := http.NewRequest("POST", c.BaseURL+"/collection", bytes.NewBuffer(body))
 	if err != nil {
@@ -47,7 +39,7 @@ func (c *Client) CreateCollection(input UpsertCollectionInput) error {
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	if err != nil {
 		return err
 	}
@@ -61,10 +53,6 @@ func (c *Client) CreateCollection(input UpsertCollectionInput) error {
 }
 
 func (c *Client) UpdateCollection(input UpsertCollectionInput, collectionId string) error {
-	if err := c.ensureAccessToken(); err != nil {
-		return err
-	}
-
 	body, _ := json.Marshal(input)
 	url := fmt.Sprintf("%s/collection/%s", c.BaseURL, collectionId)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(body))
@@ -74,7 +62,7 @@ func (c *Client) UpdateCollection(input UpsertCollectionInput, collectionId stri
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	if err != nil {
 		return err
 	}
@@ -88,10 +76,6 @@ func (c *Client) UpdateCollection(input UpsertCollectionInput, collectionId stri
 }
 
 func (c *Client) PublicCollection(collectionId string) (bool, error) {
-	if err := c.ensureAccessToken(); err != nil {
-		return false, err
-	}
-
 	url := fmt.Sprintf("%s/collection/public/%s", c.BaseURL, collectionId)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
@@ -99,7 +83,7 @@ func (c *Client) PublicCollection(collectionId string) (bool, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	if err != nil {
 		return false, err
 	}

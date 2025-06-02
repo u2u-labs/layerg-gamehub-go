@@ -25,7 +25,7 @@ func (c *Client) authenticate() error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (c *Client) refreshAccessToken() error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.doRequest(req)
+	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}

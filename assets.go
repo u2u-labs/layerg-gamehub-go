@@ -8,10 +8,6 @@ import (
 )
 
 func (c *Client) GetAsset(assetId string, collectionId string) (*Asset, error) {
-	if err := c.ensureAccessToken(); err != nil {
-		return nil, err
-	}
-
 	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -19,7 +15,7 @@ func (c *Client) GetAsset(assetId string, collectionId string) (*Asset, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -35,10 +31,6 @@ func (c *Client) GetAsset(assetId string, collectionId string) (*Asset, error) {
 }
 
 func (c *Client) CreateAsset(input CreateAssetInput) error {
-	if err := c.ensureAccessToken(); err != nil {
-		return err
-	}
-
 	body, _ := json.Marshal(input)
 	req, err := http.NewRequest("POST", c.BaseURL+"/assets/create", bytes.NewBuffer(body))
 	if err != nil {
@@ -47,7 +39,7 @@ func (c *Client) CreateAsset(input CreateAssetInput) error {
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	if err != nil {
 		return err
 	}
@@ -61,10 +53,6 @@ func (c *Client) CreateAsset(input CreateAssetInput) error {
 }
 
 func (c *Client) UpdateAsset(input UpdateAssetInput, collectionId string, assetId string) error {
-	if err := c.ensureAccessToken(); err != nil {
-		return err
-	}
-
 	body, _ := json.Marshal(input)
 	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(body))
@@ -74,7 +62,7 @@ func (c *Client) UpdateAsset(input UpdateAssetInput, collectionId string, assetI
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	if err != nil {
 		return err
 	}
@@ -88,10 +76,6 @@ func (c *Client) UpdateAsset(input UpdateAssetInput, collectionId string, assetI
 }
 
 func (c *Client) DeleteAsset(collectionId string, assetId string) error {
-	if err := c.ensureAccessToken(); err != nil {
-		return err
-	}
-
 	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -100,7 +84,7 @@ func (c *Client) DeleteAsset(collectionId string, assetId string) error {
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.doRequest(req)
+	resp, err := c.DoWithRetry(req)
 	if err != nil {
 		return err
 	}

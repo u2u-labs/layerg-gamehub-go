@@ -111,33 +111,17 @@ client, err := layerggamehub.NewClient(
 
 ## 📚 API Coverage
 
+### Assets
+
 - `CreateAsset`
 - `GetAsset`
 - `UpdateAsset`
 - `DeleteAsset`
 
+### Collections
+
+- `CreateCollection`
+- `UpdateCollection`
+- `PublicCollection`
+
 Authentication (login/refresh) is handled internally, with automatic retries.
-
----
-
-## 🧪 Run Tests
-
-```bash
-go test ./...
-```
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please:
-
-- Fork the repo
-- Create a feature branch
-- Submit a PR with clear description
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-//Asset
+// Asset
 
 type Asset struct {
 	ID             string         `json:"id"`
@@ -70,7 +70,24 @@ type Attribute struct {
 	Value     string `json:"value"`
 }
 
-//Collection
+// Collection
+
+type Collection struct {
+	ID            string          `json:"id"`
+	CreatedAt     time.Time       `json:"createdAt"`
+	UpdatedAt     time.Time       `json:"updatedAt"`
+	TotalAssets   int             `json:"totalAssets"`
+	Name          string          `json:"name"`
+	Description   string          `json:"description"`
+	AvatarURL     string          `json:"avatarUrl"`
+	ProjectID     string          `json:"projectId"`
+	NameSlug      string          `json:"nameSlug"`
+	Slug          string          `json:"slug"`
+	APIKeyID      string          `json:"apiKeyID"`
+	IsPublic      bool            `json:"isPublic"`
+	Project       Project         `json:"project"`
+	SmartContract []SmartContract `json:"SmartContract"`
+}
 
 type UpsertCollectionInput struct {
 	Name        string `json:"name"`
@@ -86,4 +103,60 @@ type SMC struct {
 	NetworkID       int    `json:"networkID"`
 	TokenSymbol     string `json:"tokenSymbol"`
 	TotalSupply     int    `json:"totalSupply"`
+}
+
+// Project
+type Project struct {
+	ID           string       `json:"id"`
+	CreatedAt    time.Time    `json:"createdAt"`
+	UpdatedAt    time.Time    `json:"updatedAt"`
+	IsEnabled    bool         `json:"isEnabled"`
+	CountFav     int          `json:"countFav"`
+	Platform     []string     `json:"platform"`
+	TotalCls     int          `json:"totalCls"`
+	Name         string       `json:"name"`
+	GameIcon     string       `json:"gameIcon"`
+	Banner       string       `json:"banner"`
+	APIKeyID     string       `json:"apiKeyID"`
+	Telegram     string       `json:"telegram"`
+	Facebook     string       `json:"facebook"`
+	Instagram    string       `json:"instagram"`
+	Discord      string       `json:"discord"`
+	Twitter      string       `json:"twitter"`
+	NameSlug     string       `json:"nameSlug"`
+	Avatar       string       `json:"avatar"`
+	Description  string       `json:"description"`
+	Information  string       `json:"information"`
+	Policy       string       `json:"policy"`
+	Version      string       `json:"version"`
+	SlideShow    []string     `json:"slideShow"`
+	TotalReview  int          `json:"totalReview"`
+	TotalRating  int          `json:"totalRating"`
+	Slug         string       `json:"slug"`
+	IsRcm        bool         `json:"isRcm"`
+	UserID       *string      `json:"userId"` // nullable
+	Mode         *string      `json:"mode"`   // nullable
+	Index        *int         `json:"index"`  // nullable
+	PlatformLink PlatformLink `json:"platformLink"`
+}
+
+type PlatformLink struct {
+	IOS     string `json:"iOS"`
+	MacOS   string `json:"macOS"`
+	Android string `json:"android"`
+	Windows string `json:"windows"`
+}
+
+type SmartContract struct {
+	ID              string     `json:"id"`
+	UpdatedAt       time.Time  `json:"updatedAt"`
+	ContractAddress string     `json:"contractAddress"`
+	ContractType    string     `json:"contractType"`
+	NetworkID       int        `json:"networkID"`
+	ContractName    string     `json:"contractName"`
+	TokenSymbol     string     `json:"tokenSymbol"`
+	TotalSupply     *int       `json:"totalSupply"` // nullable
+	CollectionID    string     `json:"collectionId"`
+	DeployedAt      *time.Time `json:"deployedAt"` // nullable
+	NameSlug        string     `json:"nameSlug"`
 }

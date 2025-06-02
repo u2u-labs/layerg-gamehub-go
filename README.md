@@ -8,8 +8,8 @@ A Go SDK for interacting with **LayerG GameHub**
 
 - Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
 - Multi-environment support (`Dev`, `Prod`)
-- Asset management: create, update, delete, fetch
-- Collection management: create, update, public collection
+- Asset management: create, update, delete, get details
+- Collection management: create, update, get details, public collection
 - Configurable timeout and retry for all requests
 
 ---
@@ -60,7 +60,7 @@ func main() {
     }
     fmt.Println("Asset created successfully!")
 
-    // Example: Fetch an asset
+    // Example: Get asset's details
     asset, err := client.GetAsset("asset-id", "collection-id")
     if err != nil {
         log.Fatalf("Failed to get asset: %v", err)

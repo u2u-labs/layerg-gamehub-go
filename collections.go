@@ -7,6 +7,33 @@ import (
 	"net/http"
 )
 
+func (c *Client) GetCollection(collectionId string) (*Collection, error) {
+	if err := c.ensureAccessToken(); err != nil {
+		return nil, err
+	}
+
+	url := fmt.Sprintf("%s/collection/%s", c.BaseURL, collectionId)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+
+	resp, err := c.doRequest(req)
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("get collection failed: %s", resp.Status)
+	}
+
+	var collection Collection
+	if err := json.NewDecoder(resp.Body).Decode(&collection); err != nil {
+		return nil, err
+	}
+
+	return &collection, nil
+}
+
 func (c *Client) CreateCollection(input UpsertCollectionInput) error {
 	if err := c.ensureAccessToken(); err != nil {
 		return err

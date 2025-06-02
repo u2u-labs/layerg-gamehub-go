@@ -20,7 +20,7 @@ func (c *Client) CreateCollection(input UpsertCollectionInput) error {
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.doRequest(req)
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func (c *Client) UpdateCollection(input UpsertCollectionInput, collectionId stri
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.doRequest(req)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (c *Client) PublicCollection(collectionId string) (bool, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.doRequest(req)
 	if err != nil {
 		return false, err
 	}

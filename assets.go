@@ -19,10 +19,7 @@ func (c *Client) GetAsset(assetId string, collectionId string) (*Asset, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 
-	resp, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
+	resp, err := c.doRequest(req)
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -50,7 +47,7 @@ func (c *Client) CreateAsset(input CreateAssetInput) error {
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.doRequest(req)
 	if err != nil {
 		return err
 	}
@@ -77,7 +74,7 @@ func (c *Client) UpdateAsset(input UpdateAssetInput, collectionId string, assetI
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.doRequest(req)
 	if err != nil {
 		return err
 	}
@@ -103,7 +100,7 @@ func (c *Client) DeleteAsset(collectionId string, assetId string) error {
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.HTTPClient.Do(req)
+	resp, err := c.doRequest(req)
 	if err != nil {
 		return err
 	}

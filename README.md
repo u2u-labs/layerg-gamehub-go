@@ -1,19 +1,24 @@
-# LayerG GameHub Go SDK
+# Layer GameHub Go SDK
 
-A Go SDK for interacting with **LayerG GameHub**.
+[![Go Reference](https://pkg.go.dev/badge/github.com/u2u-labs/layerg-gamehub-go.svg)](https://pkg.go.dev/github.com/u2u-labs/layerg-gamehub-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/u2u-labs/layerg-gamehub-go)](https://goreportcard.com/report/github.com/u2u-labs/layerg-gamehub-go)
+[![License](https://img.shields.io/github/license/yourname/layerggamehub)](LICENSE)
 
----
-
-## Features
-
-- Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
-- Multi-environment support (`Dev`, `Prod`)
-- Asset management: create, update, delete, fetch
-- Collection management: create, update, public collection
+A Go SDK for interacting with **Layer GameHub** — manage game assets (create, update, delete, fetch) and handle authentication seamlessly across development and production environments, now with configurable timeouts and retry logic.
 
 ---
 
-## Installation
+## ✨ Features
+
+- 🔑 Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
+- 🌍 Multi-environment support (`Dev`, `Prod`)
+- 🎮 Asset management: create, update, delete, fetch
+- ⏱ Configurable timeout and retry for all requests
+- ⚙ Easy integration, no manual `.env` setup required
+
+---
+
+## 📦 Installation
 
 ```bash
 go get github.com/u2u-labs/layerg-gamehub-go
@@ -21,7 +26,7 @@ go get github.com/u2u-labs/layerg-gamehub-go
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
 ```go
 package main
@@ -29,20 +34,28 @@ package main
 import (
     "fmt"
     "log"
+    "time"
 
     "github.com/u2u-labs/layerg-gamehub-go"
 )
 
 func main() {
-    // Initialize client in dev
-    client, err := layerggamehub.NewClient("your-api-key", "your-api-key-id", layerggamehub.Dev)
+    client, err := layerggamehub.NewClient(
+        "your-api-key",
+        "your-api-key-id",
+        layerggamehub.Prod,
+        &layerggamehub.ClientOptions{
+            Timeout: 5 * time.Second,
+            Retry:   3,
+        },
+    )
     if err != nil {
         log.Fatalf("Failed to initialize client: %v", err)
     }
 
     // Example: Create an asset
     assetInput := layerggamehub.CreateAssetInput{
-        Name: "My Asset",
+        Name: "My Awesome Asset",
         // add other fields as required
     }
 
@@ -62,28 +75,69 @@ func main() {
 
 ---
 
-## Environment Support
+## 🌍 Environment Support
 
 The SDK supports:
 
 - `layerggamehub.Dev` → Development environment
 - `layerggamehub.Prod` → Production environment
 
+It automatically sets the correct baseURL based on the environment passed to `NewClient()`.
+
 ---
 
-## API Coverage
+## ⚙ Client Options
 
-### Asset
+When initializing the client, you can provide:
+
+- **Timeout** → overall timeout per HTTP request (default: 10 seconds)
+- **Retry** → number of times to retry on failure (default: 1)
+
+Example:
+
+```go
+client, err := layerggamehub.NewClient(
+    "apiKey",
+    "apiKeyId",
+    layerggamehub.Dev,
+    &layerggamehub.ClientOptions{
+        Timeout: 5 * time.Second,
+        Retry:   3,
+    },
+)
+```
+
+---
+
+## 📚 API Coverage
 
 - `CreateAsset`
 - `GetAsset`
 - `UpdateAsset`
 - `DeleteAsset`
 
-### Collection
+Authentication (login/refresh) is handled internally, with automatic retries.
 
-- `CreateCollection`
-- `UpdateCollection`
-- `PublicCollection`
+---
 
-Authentication (login/refresh) is handled internally.
+## 🧪 Run Tests
+
+```bash
+go test ./...
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please:
+
+- Fork the repo
+- Create a feature branch
+- Submit a PR with clear description
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

@@ -4,7 +4,7 @@ A Go SDK for interacting with **LayerG GameHub**
 
 ---
 
-## ✨ Features
+## Features
 
 - Authenticate with `apiKey` + `apiKeyId`, auto-fetch and refresh `accessToken`
 - Multi-environment support (`Dev`, `Prod`)
@@ -22,7 +22,7 @@ go get github.com/u2u-labs/layerg-gamehub-go
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```go
 package main
@@ -82,7 +82,7 @@ It automatically sets the correct baseURL based on the environment passed to `Ne
 
 ---
 
-## ⚙ Client Options
+## Client Options
 
 When initializing the client, you can provide:
 

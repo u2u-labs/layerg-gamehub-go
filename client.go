@@ -79,8 +79,7 @@ func (c *Client) DoWithRetry(req *http.Request) (*http.Response, error) {
 			return resp, nil
 		}
 
-		// If error is not connection error, return without retry
-		if !isConnectionError(err) {
+		if !shouldRetry(resp, err) {
 			return nil, err
 		}
 	}

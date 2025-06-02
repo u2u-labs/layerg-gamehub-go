@@ -3,6 +3,7 @@ package layerggamehub
 import (
 	"errors"
 	"net"
+	"net/http"
 	"net/url"
 	"strings"
 )
@@ -22,6 +23,18 @@ func isConnectionError(err error) bool {
 
 	if strings.Contains(err.Error(), "connection refused") ||
 		strings.Contains(err.Error(), "connection reset") {
+		return true
+	}
+
+	return false
+}
+
+func shouldRetry(resp *http.Response, err error) bool {
+	if err != nil {
+		return isConnectionError(err)
+	}
+
+	if resp.StatusCode >= 500 && resp.StatusCode < 600 {
 		return true
 	}
 

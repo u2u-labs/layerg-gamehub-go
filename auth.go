@@ -5,17 +5,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type authResponse struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
+	AccessToken        string `json:"accessToken"`
+	RefreshToken       string `json:"refreshToken"`
+	AccessTokenExpire  int64  `json:"accessTokenExpire"`
+	RefreshTokenExpire int64  `json:"refreshTokenExpire"`
 }
 
 func (c *Client) authenticate() error {
 	payload := map[string]string{
-		"apiKey":   c.ApiKey,
-		"apiKeyID": c.ApiKeyId,
+		"apiKey":   c.APIKey,
+		"apiKeyID": c.APIKeyID,
 	}
 	body, _ := json.Marshal(payload)
 
@@ -48,7 +51,14 @@ func (c *Client) authenticate() error {
 }
 
 func (c *Client) ensureAccessToken() error {
-	return c.refreshAccessToken()
+	currentTs := time.Now().UnixMilli()
+	if currentTs >= int64(c.RefreshTokenExpire) {
+		return c.authenticate()
+	}
+	if currentTs >= c.AccessTokenExpire {
+		return c.refreshAccessToken()
+	}
+	return nil
 }
 
 func (c *Client) refreshAccessToken() error {
@@ -82,5 +92,7 @@ func (c *Client) refreshAccessToken() error {
 	defer c.mu.Unlock()
 	c.AccessToken = authResp.AccessToken
 	c.RefreshToken = authResp.RefreshToken
+	c.AccessTokenExpire = authResp.AccessTokenExpire
+	c.RefreshTokenExpire = authResp.RefreshTokenExpire
 	return nil
 }

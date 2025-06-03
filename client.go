@@ -9,13 +9,15 @@ import (
 )
 
 type Client struct {
-	ApiKey       string
-	ApiKeyId     string
-	AccessToken  string
-	RefreshToken string
-	BaseURL      string
-	HTTPClient   *http.Client
-	Retry        int
+	APIKey             string
+	APIKeyID           string
+	AccessToken        string
+	RefreshToken       string
+	AccessTokenExpire  int64
+	RefreshTokenExpire int64
+	BaseURL            string
+	HTTPClient         *http.Client
+	Retry              int
 
 	mu sync.Mutex
 }
@@ -25,64 +27,60 @@ type ClientOptions struct {
 	Retry   int           // e.g., 3 retries
 }
 
-func NewClient(apiKey string, apiKeyId string, env Environment, opts *ClientOptions) (*Client, error) {
-	timeout := 10 * time.Second
-	if opts != nil && opts.Timeout > 0 {
-		timeout = opts.Timeout
-	}
-
+// NewClient creates a new Client instance with optional configurations.
+func NewClient(apiKey, apiKeyID string, env Environment, opts *ClientOptions) (*Client, error) {
 	if apiKey == "" {
-		return nil, errors.New("Api key cannot be empty")
+		return nil, errors.New("API key cannot be empty")
+	}
+	if apiKeyID == "" {
+		return nil, errors.New("API key ID cannot be empty")
 	}
 
-	if apiKeyId == "" {
-		return nil, errors.New("Api key id cannot be empty")
-	}
-
-	c := &Client{
-		ApiKey:     apiKey,
-		ApiKeyId:   apiKeyId,
-		BaseURL:    GetBaseURL(env),
-		HTTPClient: &http.Client{Timeout: timeout},
-	}
+	timeout := 10 * time.Second
+	retry := 1
 
 	if opts != nil {
-		c.Retry = opts.Retry
+		if opts.Timeout > 0 {
+			timeout = opts.Timeout
+		}
+		if opts.Retry > 0 {
+			retry = opts.Retry
+		}
 	}
 
-	if err := c.authenticate(); err != nil {
-		return nil, err
+	client := &Client{
+		APIKey:     apiKey,
+		APIKeyID:   apiKeyID,
+		BaseURL:    GetBaseURL(env),
+		HTTPClient: &http.Client{Timeout: timeout},
+		Retry:      retry,
 	}
 
-	return c, nil
+	if err := client.authenticate(); err != nil {
+		return nil, fmt.Errorf("authentication failed: %w", err)
+	}
+
+	return client, nil
 }
 
+// DoWithRetry performs an HTTP request with retry logic.
 func (c *Client) DoWithRetry(req *http.Request) (*http.Response, error) {
+	if err := c.ensureAccessToken(); err != nil {
+		return nil, fmt.Errorf("failed to ensure access token: %w", err)
+	}
+
 	var resp *http.Response
 	var err error
 
-	retries := 1
-	if c.Retry > 0 {
-		retries = c.Retry
-	}
-
-	for i := 0; i < retries; i++ {
-		if err := c.ensureAccessToken(); err != nil {
-			return nil, err
-		}
-	}
-
-	for i := 0; i < retries; i++ {
+	for attempt := 1; attempt <= c.Retry; attempt++ {
 		resp, err = c.HTTPClient.Do(req)
-
 		if err == nil {
 			return resp, nil
 		}
-
 		if !shouldRetry(resp, err) {
 			return nil, err
 		}
 	}
 
-	return nil, fmt.Errorf("request failed after %d retries: %w", retries, err)
+	return nil, fmt.Errorf("request failed after %d retries: %w", c.Retry, err)
 }

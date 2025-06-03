@@ -55,7 +55,7 @@ func main() {
         // add other fields as required
     }
 
-    if err := client.CreateAsset(assetInput); err != nil {
+    if asset, err := client.CreateAsset(assetInput); err != nil {
         log.Fatalf("Failed to create asset: %v", err)
     }
     fmt.Println("Asset created successfully!")

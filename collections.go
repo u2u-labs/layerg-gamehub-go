@@ -85,23 +85,28 @@ func (c *Client) UpdateCollection(input UpsertCollectionInput, collectionId stri
 	return &collection, nil
 }
 
-func (c *Client) PublicCollection(collectionId string) (bool, error) {
+func (c *Client) PublicCollection(collectionId string) (*Collection, error) {
 	url := fmt.Sprintf("%s/collection/public/%s", c.BaseURL, collectionId)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 
 	resp, err := c.DoWithRetry(req)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return false, fmt.Errorf("public collection failed: %s", resp.Status)
+	var collection Collection
+	if err := json.NewDecoder(resp.Body).Decode(&collection); err != nil {
+		return nil, err
 	}
 
-	return true, nil
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("public collection failed: %s", resp.Status)
+	}
+
+	return &collection, nil
 }

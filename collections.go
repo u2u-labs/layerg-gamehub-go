@@ -7,13 +7,13 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetCollection(collectionId string) (*Collection, error) {
+func (c *CollectionModule) GetById(collectionId string) (*Collection, error) {
 	url := fmt.Sprintf("%s/collection/%s", c.BaseURL, collectionId)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+c.GetAccessToken())
 
 	resp, err := c.DoWithRetry(req)
 	defer resp.Body.Close()
@@ -30,13 +30,13 @@ func (c *Client) GetCollection(collectionId string) (*Collection, error) {
 	return &collection, nil
 }
 
-func (c *Client) CreateCollection(input UpsertCollectionInput) (*Collection, error) {
+func (c *CollectionModule) Create(input CreateCollectionInput) (*Collection, error) {
 	body, _ := json.Marshal(input)
 	req, err := http.NewRequest("POST", c.BaseURL+"/collection", bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+c.GetAccessToken())
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.DoWithRetry(req)
@@ -57,14 +57,14 @@ func (c *Client) CreateCollection(input UpsertCollectionInput) (*Collection, err
 	return &collection, nil
 }
 
-func (c *Client) UpdateCollection(input UpsertCollectionInput, collectionId string) (*Collection, error) {
-	body, _ := json.Marshal(input)
-	url := fmt.Sprintf("%s/collection/%s", c.BaseURL, collectionId)
+func (c *CollectionModule) Update(input UpdateCollectionInput) (*Collection, error) {
+	body, _ := json.Marshal(input.Data)
+	url := fmt.Sprintf("%s/collection/%s", c.BaseURL, input.Where.CollectionID)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+c.GetAccessToken())
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.DoWithRetry(req)
@@ -85,13 +85,13 @@ func (c *Client) UpdateCollection(input UpsertCollectionInput, collectionId stri
 	return &collection, nil
 }
 
-func (c *Client) PublicCollection(collectionId string) (*Collection, error) {
+func (c *CollectionModule) Public(collectionId string) (*Collection, error) {
 	url := fmt.Sprintf("%s/collection/public/%s", c.BaseURL, collectionId)
 	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+c.GetAccessToken())
 
 	resp, err := c.DoWithRetry(req)
 	if err != nil {

@@ -3,14 +3,14 @@ package layerggamehub
 type Environment string
 
 const (
-	Dev  Environment = "dev"
-	Prod Environment = "prod"
+	Development Environment = "Development"
+	Production  Environment = "Production"
 )
 
 func GetBaseURL(env Environment) string {
 	var baseURLs = map[Environment]string{
-		Dev:  "https://agg-dev.layerg.xyz/api",
-		Prod: "https://agg-dev.layerg.xyz/api",
+		Development: "https://agg-dev.layerg.xyz/api",
+		Production:  "https://agg-dev.layerg.xyz/api",
 	}
 
 	return baseURLs[env]

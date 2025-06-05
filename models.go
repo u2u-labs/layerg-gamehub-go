@@ -44,13 +44,22 @@ type CreateAssetInput struct {
 	Metadata     Metadata `json:"metadata"`
 }
 
-type UpdateAssetInput struct {
+type UpdateAssetData struct {
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
 	TokenID     *string  `json:"tokenId,omitempty"`
 	Quantity    string   `json:"quantity"`
 	Media       Media    `json:"media"`
 	Metadata    Metadata `json:"metadata"`
+}
+
+type UpdateAssetWhereInput struct {
+	AssetId      string `json:"assetId"`
+	CollectionId string `json:"collectionId"`
+}
+type UpdateAssetInput struct {
+	Data  UpdateAssetData       `json:"data"`
+	Where UpdateAssetWhereInput `json:"where"`
 }
 
 type Media struct {
@@ -89,12 +98,29 @@ type Collection struct {
 	SmartContract []SmartContract `json:"SmartContract"`
 }
 
-type UpsertCollectionInput struct {
+type CreateCollectionInput struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	AvatarURL   string `json:"avatarUrl"`
 	ProjectID   string `json:"projectId"`
 	SMC         SMC    `json:"smc"`
+}
+
+type UpdateCollectionData struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	AvatarURL   string `json:"avatarUrl"`
+	ProjectID   string `json:"projectId"`
+	SMC         SMC    `json:"smc"`
+}
+
+type UpdateCollectionWhereInput struct {
+	CollectionID string `json:"collectionId"`
+}
+
+type UpdateCollectionInput struct {
+	Data  UpdateCollectionData       `json:"data"`
+	Where UpdateCollectionWhereInput `json:"where"`
 }
 
 type SMC struct {

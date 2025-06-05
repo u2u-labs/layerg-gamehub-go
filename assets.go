@@ -7,15 +7,15 @@ import (
 	"net/http"
 )
 
-func (c *Client) GetAsset(assetId string, collectionId string) (*Asset, error) {
-	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
+func (a *AssetModule) GetByTokenId(tokenId string, collectionId string) (*Asset, error) {
+	url := fmt.Sprintf("%s/assets/%s/%s", a.BaseURL, collectionId, tokenId)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+a.GetAccessToken())
 
-	resp, err := c.DoWithRetry(req)
+	resp, err := a.DoWithRetry(req)
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
@@ -30,16 +30,16 @@ func (c *Client) GetAsset(assetId string, collectionId string) (*Asset, error) {
 	return &asset, nil
 }
 
-func (c *Client) CreateAsset(input CreateAssetInput) (*Asset, error) {
+func (a *AssetModule) Create(input CreateAssetInput) (*Asset, error) {
 	body, _ := json.Marshal(input)
-	req, err := http.NewRequest("POST", c.BaseURL+"/assets/create", bytes.NewBuffer(body))
+	req, err := http.NewRequest("POST", a.BaseURL+"/assets/create", bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+a.GetAccessToken())
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.DoWithRetry(req)
+	resp, err := a.DoWithRetry(req)
 	if err != nil {
 		return nil, err
 	}
@@ -57,17 +57,17 @@ func (c *Client) CreateAsset(input CreateAssetInput) (*Asset, error) {
 	return &asset, nil
 }
 
-func (c *Client) UpdateAsset(input UpdateAssetInput, collectionId string, assetId string) (*Asset, error) {
-	body, _ := json.Marshal(input)
-	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
+func (a *AssetModule) Update(input UpdateAssetInput) (*Asset, error) {
+	body, _ := json.Marshal(input.Data)
+	url := fmt.Sprintf("%s/assets/%s/%s", a.BaseURL, input.Where.CollectionId, input.Where.AssetId)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+a.GetAccessToken())
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.DoWithRetry(req)
+	resp, err := a.DoWithRetry(req)
 	if err != nil {
 		return nil, err
 	}
@@ -85,24 +85,24 @@ func (c *Client) UpdateAsset(input UpdateAssetInput, collectionId string, assetI
 	return &asset, nil
 }
 
-func (c *Client) DeleteAsset(collectionId string, assetId string) error {
-	url := fmt.Sprintf("%s/assets/%s/%s", c.BaseURL, collectionId, assetId)
+func (a *AssetModule) Delete(collectionId string, tokenId string) (bool, error) {
+	url := fmt.Sprintf("%s/assets/%s/%s", a.BaseURL, collectionId, tokenId)
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
-		return err
+		return false, err
 	}
-	req.Header.Set("Authorization", "Bearer "+c.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+a.GetAccessToken())
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := c.DoWithRetry(req)
+	resp, err := a.DoWithRetry(req)
 	if err != nil {
-		return err
+		return false, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("delete asset failed: %s", resp.Status)
+		return false, fmt.Errorf("delete asset failed: %s", resp.Status)
 	}
 
-	return nil
+	return true, nil
 }

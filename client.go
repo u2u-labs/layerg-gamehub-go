@@ -8,6 +8,18 @@ import (
 	"time"
 )
 
+type AssetModule struct {
+	BaseURL        string
+	GetAccessToken func() string
+	DoWithRetry    func(*http.Request) (*http.Response, error)
+}
+
+type CollectionModule struct {
+	BaseURL        string
+	GetAccessToken func() string
+	DoWithRetry    func(*http.Request) (*http.Response, error)
+}
+
 type Client struct {
 	APIKey             string
 	APIKeyID           string
@@ -17,6 +29,8 @@ type Client struct {
 	RefreshTokenExpire int64
 	BaseURL            string
 	HTTPClient         *http.Client
+	Asset              *AssetModule
+	Collection         *CollectionModule
 	Retry              int
 
 	mu sync.Mutex
@@ -54,6 +68,18 @@ func NewClient(apiKey, apiKeyID string, env Environment, opts *ClientOptions) (*
 		BaseURL:    GetBaseURL(env),
 		HTTPClient: &http.Client{Timeout: timeout},
 		Retry:      retry,
+	}
+
+	client.Asset = &AssetModule{
+		BaseURL:        client.BaseURL,
+		GetAccessToken: func() string { return client.AccessToken },
+		DoWithRetry:    client.DoWithRetry,
+	}
+
+	client.Collection = &CollectionModule{
+		BaseURL:        client.BaseURL,
+		GetAccessToken: func() string { return client.AccessToken },
+		DoWithRetry:    client.DoWithRetry,
 	}
 
 	if err := client.authenticate(); err != nil {

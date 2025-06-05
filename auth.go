@@ -8,14 +8,14 @@ import (
 	"time"
 )
 
-type authResponse struct {
+type AuthResponse struct {
 	AccessToken        string `json:"accessToken"`
 	RefreshToken       string `json:"refreshToken"`
 	AccessTokenExpire  int64  `json:"accessTokenExpire"`
 	RefreshTokenExpire int64  `json:"refreshTokenExpire"`
 }
 
-func (c *Client) authenticate() error {
+func (c *Client) Authenticate() (*AuthResponse, error) {
 	payload := map[string]string{
 		"apiKey":   c.APIKey,
 		"apiKeyID": c.APIKeyID,
@@ -24,39 +24,45 @@ func (c *Client) authenticate() error {
 
 	req, err := http.NewRequest("POST", c.BaseURL+"/auth/login", bytes.NewBuffer(body))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.DoWithRetry(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("auth failed with status: %s", resp.Status)
+		return nil, fmt.Errorf("auth failed with status: %s", resp.Status)
 	}
 
-	var authResp authResponse
+	var authResp AuthResponse
 	if err := json.NewDecoder(resp.Body).Decode(&authResp); err != nil {
-		return err
+		return nil, err
 	}
 
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.AccessToken = authResp.AccessToken
 	c.RefreshToken = authResp.RefreshToken
-	return nil
+	return &authResp, nil
 }
 
 func (c *Client) ensureAccessToken() error {
 	currentTs := time.Now().UnixMilli()
 	if currentTs >= int64(c.RefreshTokenExpire) {
-		return c.authenticate()
+		_, err := c.Authenticate()
+		if err != nil {
+			return err
+		}
 	}
 	if currentTs >= c.AccessTokenExpire {
-		return c.refreshAccessToken()
+		err := c.refreshAccessToken()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -83,7 +89,7 @@ func (c *Client) refreshAccessToken() error {
 		return fmt.Errorf("refresh failed with status: %s", resp.Status)
 	}
 
-	var authResp authResponse
+	var authResp AuthResponse
 	if err := json.NewDecoder(resp.Body).Decode(&authResp); err != nil {
 		return err
 	}

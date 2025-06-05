@@ -82,10 +82,6 @@ func NewClient(apiKey, apiKeyID string, env Environment, opts *ClientOptions) (*
 		DoWithRetry:    client.DoWithRetry,
 	}
 
-	if err := client.authenticate(); err != nil {
-		return nil, fmt.Errorf("authentication failed: %w", err)
-	}
-
 	return client, nil
 }
 

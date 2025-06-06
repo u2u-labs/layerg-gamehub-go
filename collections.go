@@ -16,6 +16,9 @@ func (c *CollectionModule) GetById(collectionId string) (*Collection, error) {
 	req.Header.Set("Authorization", "Bearer "+c.GetAccessToken())
 
 	resp, err := c.DoWithRetry(req)
+	if err != nil {
+		return nil, err
+	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {

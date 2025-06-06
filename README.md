@@ -10,10 +10,10 @@ go get github.com/u2u-labs/layerg-gamehub-go
 
 ---
 
-## Environments
+## Mode
 
 ```go
-layerggamehub.Development
+layerggamehub.Sandbox 
 layerggamehub.Production
 ```
 
@@ -40,7 +40,7 @@ func main() {
 		Timeout: 10 * time.Second,
 	}
 
-	client, err := layerggamehub.NewClient("apiKey", "apiKeyId", layerggamehub.Development, opts)
+	client, err := layerggamehub.NewClient("apiKey", "apiKeyId", Mode.Sandbox, opts)
 	if err != nil {
 		log.Fatal("Failed to initialize client:", err)
 	}

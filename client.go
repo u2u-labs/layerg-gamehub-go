@@ -42,7 +42,7 @@ type ClientOptions struct {
 }
 
 // NewClient creates a new Client instance with optional configurations.
-func NewClient(apiKey, apiKeyID string, env Environment, opts *ClientOptions) (*Client, error) {
+func NewClient(apiKey, apiKeyID string, mode Mode, opts *ClientOptions) (*Client, error) {
 	if apiKey == "" {
 		return nil, errors.New("API key cannot be empty")
 	}
@@ -65,7 +65,7 @@ func NewClient(apiKey, apiKeyID string, env Environment, opts *ClientOptions) (*
 	client := &Client{
 		APIKey:     apiKey,
 		APIKeyID:   apiKeyID,
-		BaseURL:    GetBaseURL(env),
+		BaseURL:    GetBaseURL(mode),
 		HTTPClient: &http.Client{Timeout: timeout},
 		Retry:      retry,
 	}
